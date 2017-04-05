@@ -31,10 +31,18 @@ def printGrid(gridname, size):
                 line = "| "  #clear "line"
         printLine(size)
 
-def generateAnt(gridname, size):
-        locationr = randint(0, size)
-        locationc = randint(0, size)
-        gridname[locationr][locationc] =" X"
+def generateAnt(gridname, size, rand):
+        if (rand == 0):
+                locationr = randint(0, size-1)
+                locationc = randint(0, size-1)
+                gridname[locationr][locationc] =" X"
+        if (rand == 1):
+                gridname[(size/2)-1][(size/2)-1] = " X"
 
-generateAnt(grid, 20)
-printGrid(grid, 20)
+#def moveAnt(gridname, size):
+        
+        
+##MAIN PROGRAM LOOP##
+for rounds in range(1):
+        generateAnt(grid, 20, 1)
+        printGrid(grid, 20)
