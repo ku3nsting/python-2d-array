@@ -6,20 +6,35 @@ At a black square, turn 90° left, flip the color of the square, move forward one
 
 Langton's ant can also be described as a cellular automaton, where the grid is colored black or white and the “ant” square has one of eight different colors assigned to encode the combination of black/white state and the current direction of motion of the ant.[2]"""
 
+from random import randint
+
 grid = []
 
-for index in range(20):
+for idx in range(20):
 	grid.append([])
 	for innerIndex in range(20):
-		grid[index].append(' 0')
+		grid[idx].append('  ')
 
+def printLine(width):
+        topline = ""
+        for idx in range((width * 2) + 2):
+                topline += "-"
+        print "+" + topline + "+"
+        
 def printGrid(gridname, size):
-        line = " "
+        printLine(size)
+        line = "| "
         for rows in range(size):
                 for columns in range(size):
                         line += str(gridname[rows][columns])
-                print line
-                line = " "
+                print line + " |"
+                line = "| "  #clear "line"
+        printLine(size)
 
-#grid[10][10] = 8
+def generateAnt(gridname, size):
+        locationr = randint(0, size)
+        locationc = randint(0, size)
+        gridname[locationr][locationc] =" X"
+
+generateAnt(grid, 20)
 printGrid(grid, 20)
