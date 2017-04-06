@@ -8,41 +8,107 @@ Langton's ant can also be described as a cellular automaton, where the grid is c
 
 from random import randint
 
-grid = []
+####################################
+#          DEFINE CLASSES          #
+#                                  #
+####################################
+class Cell:
+        def __init__(self, char, r, c):
+                self.visits = 0
+                self.character = char
+                self.row = r
+                self.col = c
 
-for idx in range(20):
-	grid.append([])
-	for innerIndex in range(20):
-		grid[idx].append('  ')
+class Ant:
+        def __init__(self, r, c):
+                self.direction = 'N'
+                self.row = r
+                self.col = c
+                self.moved = False
+                self.valueReplaced = ' '
+                
+        def moveAnt(self, size, grid):
+                grid.colorChange(self.row, self.col)
+                
+                if(self.direction == 'N'):
+                        self.row = self.row - 1
+                        self.direction = 'E'
+                        return
+                if(self.direction == 'E'):
+                        self.com = self.col + 1
+                        self.direction = 'S'
+                        return
+                if(self.direction == 'S'):
+                        self.row = self.row + 1
+                        self.direction = 'W'
+                        return
+                if(self.direction == 'W'):
+                        self.col = self.col - 1
+                        self.direction = 'N'
+                        return
 
-def printLine(width):
+class Grid:
+    def __init__(self):
+
+        self.grid = []
+
+    def colorChange(self, row, col):
+           if (self.grid[row][col].character == ' '):
+               self.grid[row][col].character = '0'
+           else:
+               self.grid[row][col].character == ' '
+
+    def initGrid(self, size):
+        for idx in range(size):
+            self.grid.append([])
+            for innerIndex in range(size):
+                newCell = Cell(' ', idx, innerIndex)
+                self.grid[idx].append(newCell)
+
+    def generateAnt(self, size, rand):
+        if (rand == 1):
+            locationr = randint(0, size-1)
+            locationc = randint(0, size-1)
+            ant = Ant(locationr, locationc)
+        if (rand == 0):
+            location = (size/2)-1
+            ant = Ant(location, location)
+
+        self.grid[ant.row][ant.col].character = 'X'
+        return ant
+
+    def printLine(self, width):
         topline = ""
-        for idx in range((width * 2) + 2):
+        for idx in range((width * 2 + 1)):
                 topline += "-"
         print "+" + topline + "+"
-        
-def printGrid(gridname, size):
-        printLine(size)
-        line = "| "
+
+    def printGrid(self, size):
+        number = 1
+        print number
+        grid.printLine(size)
+        line = "|"
         for rows in range(size):
                 for columns in range(size):
-                        line += str(gridname[rows][columns])
+                        line += " "+str(self.grid[rows][columns].character)
                 print line + " |"
-                line = "| "  #clear "line"
-        printLine(size)
+                line = "|"  #clear "line"
+        grid.printLine(size)
+        number = number + 1
 
-def generateAnt(gridname, size, rand):
-        if (rand == 0):
-                locationr = randint(0, size-1)
-                locationc = randint(0, size-1)
-                gridname[locationr][locationc] =" X"
-        if (rand == 1):
-                gridname[(size/2)-1][(size/2)-1] = " X"
+####################################
+#         MAIN PROGRAM LOOP        #
+#                                  #
+####################################
 
-#def moveAnt(gridname, size):
-        
-        
-##MAIN PROGRAM LOOP##
-for rounds in range(1):
-        generateAnt(grid, 20, 1)
-        printGrid(grid, 20)
+#write a user input method that takes number of rounds and whether first ant
+#is central or random as arguments
+
+grid  = Grid()
+grid.initGrid(20)
+
+ant = grid.generateAnt(20, 0)
+
+for rounds in range(100):
+        ant.moveAnt(20, grid)
+        grid.printGrid(20)
