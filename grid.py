@@ -27,36 +27,64 @@ class Ant:
                 self.moved = False
                 self.valueReplaced = ' '
                 
-        def moveAnt(self, size, grid):
-                grid.colorChange(self.row, self.col)
+        def moveAnt(self, size, workingGrid):
+
+        #change the color of the ant's current square based on what its value was before
+        #store the value of the ant's destination
+                self.valueReplaced = grid.colorChange(self.row, self.col, self)
+
+        #calculate where the ant should go next
+                self.moved = False
                 
-                if(self.direction == 'N'):
+                if(self.direction == 'N' and self.moved == False):
                         self.row = self.row - 1
-                        self.direction = 'E'
-                        return
-                if(self.direction == 'E'):
+                        if (self.valueReplaced == ' '):
+                                self.direction = 'E'
+                        else:
+                                self.direction = 'W'
+                        self.moved = True
+                if(self.direction == 'E' and self.moved == False):
                         self.com = self.col + 1
-                        self.direction = 'S'
-                        return
-                if(self.direction == 'S'):
+                        if (self.valueReplaced == ' '):
+                                self.direction = 'S'
+                        else:
+                                self.direction = 'N'
+                        self.moved = True
+                if(self.direction == 'S' and self.moved == False):
                         self.row = self.row + 1
-                        self.direction = 'W'
-                        return
-                if(self.direction == 'W'):
+                        if (self.valueReplaced == ' '):
+                                self.direction = 'W'
+                        else:
+                                self.direction = 'E'
+                        self.moved = True
+                if(self.direction == 'W' and self.moved == False):
                         self.col = self.col - 1
-                        self.direction = 'N'
-                        return
+                        if (self.valueReplaced == ' '):
+                                self.direction = 'N'
+                        else:
+                                self.direction = 'S'
+                        self.moved = True
+                        
+        #move the ant to the destination
+                grid.relocateAnt(self.row, self.col)
+                
 
 class Grid:
     def __init__(self):
 
         self.grid = []
 
-    def colorChange(self, row, col):
-           if (self.grid[row][col].character == ' '):
-               self.grid[row][col].character = '0'
-           else:
-               self.grid[row][col].character == ' '
+    def colorChange(self, row, col, ant):
+            val = ant.valueReplaced
+            if (val == ' '):
+                    self.grid[row][col].character = '0'
+            else:
+                    self.grid[row][col].character == ' '
+
+            return val
+
+    def relocateAnt(self, row, col):
+            self.grid[row][col].character = 'X'
 
     def initGrid(self, size):
         for idx in range(size):
