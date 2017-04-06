@@ -25,47 +25,51 @@ class Ant:
                 self.row = r
                 self.col = c
                 self.moved = False
-                self.valueReplaced = ' '
+                self.valueReplaced = '0'
                 
         def moveAnt(self, size, workingGrid):
 
-        #change the color of the ant's current square based on what its value was before
-        #store the value of the ant's destination
-                self.valueReplaced = grid.colorChange(self.row, self.col, self)
+                #take the x and y of where the ant is
+                #take the value that was there before x was placed
+                #overwrite the x with opposite of original value
+                grid.colorChange(self.row, self.col, self.valueReplaced)
 
-        #calculate where the ant should go next
+                #calculate where the ant should go next
                 self.moved = False
                 
                 if(self.direction == 'N' and self.moved == False):
                         self.row = self.row - 1
-                        if (self.valueReplaced == ' '):
+                        if (self.valueReplaced == '0'):
                                 self.direction = 'E'
                         else:
                                 self.direction = 'W'
-                        self.moved = True
-                if(self.direction == 'E' and self.moved == False):
-                        self.com = self.col + 1
-                        if (self.valueReplaced == ' '):
-                                self.direction = 'S'
-                        else:
-                                self.direction = 'N'
-                        self.moved = True
-                if(self.direction == 'S' and self.moved == False):
-                        self.row = self.row + 1
-                        if (self.valueReplaced == ' '):
-                                self.direction = 'W'
-                        else:
-                                self.direction = 'E'
-                        self.moved = True
-                if(self.direction == 'W' and self.moved == False):
-                        self.col = self.col - 1
-                        if (self.valueReplaced == ' '):
-                                self.direction = 'N'
-                        else:
-                                self.direction = 'S'
                         self.moved = True
                         
-        #move the ant to the destination
+                if(self.direction == 'E' and self.moved == False):
+                        self.com = self.col + 1
+                        if (self.valueReplaced == '0'):
+                                self.direction = 'S'
+                        else:
+                                self.direction = 'N'
+                        self.moved = True
+                        
+                if(self.direction == 'S' and self.moved == False):
+                        self.row = self.row + 1
+                        if (self.valueReplaced == '0'):
+                                self.direction = 'W'
+                        else:
+                                self.direction = 'E'
+                        self.moved = True
+                        
+                if(self.direction == 'W' and self.moved == False):
+                        self.col = self.col - 1
+                        if (self.valueReplaced == '0'):
+                                self.direction = 'N'
+                        else:
+                                self.direction = 'S'
+                        self.moved = True
+
+                self.valueReplaced = grid.getValReplaced(self.row, self.col)
                 grid.relocateAnt(self.row, self.col)
                 
 
@@ -74,13 +78,14 @@ class Grid:
 
         self.grid = []
 
-    def colorChange(self, row, col, ant):
-            val = ant.valueReplaced
-            if (val == ' '):
+    def colorChange(self, row, col, val):
+            if (val == '0'):
+                    self.grid[row][col].character = '#'
+            elif (val == '#'):
                     self.grid[row][col].character = '0'
-            else:
-                    self.grid[row][col].character == ' '
 
+    def getValReplaced(self, row, col):
+            val = self.grid[row][col].character
             return val
 
     def relocateAnt(self, row, col):
@@ -111,8 +116,7 @@ class Grid:
                 topline += "-"
         print "+" + topline + "+"
 
-    def printGrid(self, size):
-        number = 1
+    def printGrid(self, size, number):
         print number
         grid.printLine(size)
         line = "|"
@@ -132,11 +136,12 @@ class Grid:
 #write a user input method that takes number of rounds and whether first ant
 #is central or random as arguments
 
+size = 20
 grid  = Grid()
-grid.initGrid(20)
+grid.initGrid(size)
 
-ant = grid.generateAnt(20, 0)
+ant = grid.generateAnt(size, 0)
 
 for rounds in range(100):
-        ant.moveAnt(20, grid)
-        grid.printGrid(20)
+        ant.moveAnt(size, grid)
+        grid.printGrid(size, 1)
