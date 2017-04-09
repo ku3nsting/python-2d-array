@@ -11,6 +11,65 @@ from random import randint
 import os
 
 ####################################
+#          INPUT VALIDATOR         #
+#                                  #
+####################################
+def validate_ints(number, upper):
+        while True:
+                number = input()
+                try:
+                        number = int(number)
+                except ValueError:
+                        print "Invalid Input. Please try again:\n"
+                        continue
+
+                if (0 < number and number <= upper):
+                        return number
+                else:
+                        print "Invalid Input. Please try again:\n"
+                        continue
+
+####################################
+#          INTRO FUNCTION          #
+#                                  #
+####################################
+
+print " ** LANGTON'S ANT IMPLEMENTATION **"
+print " Choose a color scheme for the simulation:"
+print " 1.\tMagenta and Green"
+print " 2.\tRed and Gray"
+print " 3.\tBlack and White"
+
+choice = 0
+choice = validate_ints(choice, 3)
+
+color = choice
+
+####################################
+#          DEFINE COLORS           #
+#                                  #
+####################################
+
+        #magenta and green
+if(color == 1):
+        X = '\x1b[0;30;43m' + 'X' + '\x1b[0m'
+        W = '\x1b[1;30;42m' + '0' + '\x1b[0m'
+        B = '\x1b[1;35;40m' + '#' + '\x1b[0m'
+
+        #red and blue
+if(color == 2):
+        X = '\x1b[0;30;43m' + 'X' + '\x1b[0m'
+        W = '\x1b[1;35;42m' + '0' + '\x1b[0m'
+        B = '\x1b[1;31;40m' + '#' + '\x1b[0m'
+
+        #black and white
+if(color == 3):
+        X = '\x1b[0;30;43m' + 'X' + '\x1b[0m'
+        W = '\x1b[1;30;40m' + '0' + '\x1b[0m'
+        B = '\x1b[1;37;47m' + '#' + '\x1b[0m'
+
+
+####################################
 #          DEFINE CLASSES          #
 #                                  #
 ####################################
@@ -37,7 +96,7 @@ class Ant:
                 oldRow = self.row
                 
                 if(self.direction == 'N' and self.moved == False):
-                        if (self.valueReplaced == '0' or self.valueReplaced == ' '):
+                        if (self.valueReplaced == W or self.valueReplaced == ' '):
                                 self.direction = 'E'
                                 self.col = self.col + 1
                         else:
@@ -46,7 +105,7 @@ class Ant:
                         self.moved = True
                         
                 if(self.direction == 'E' and self.moved == False):
-                        if (self.valueReplaced == '0' or self.valueReplaced == ' '):
+                        if (self.valueReplaced == W or self.valueReplaced == ' '):
                                 self.direction = 'S'
                                 self.row = self.row + 1
                         else:
@@ -55,7 +114,7 @@ class Ant:
                         self.moved = True
                         
                 if(self.direction == 'S' and self.moved == False):
-                        if (self.valueReplaced == '0' or self.valueReplaced == ' '):
+                        if (self.valueReplaced == W or self.valueReplaced == ' '):
                                 self.direction = 'W'
                                 self.col = self.col - 1
                         else:
@@ -64,7 +123,7 @@ class Ant:
                         self.moved = True
                         
                 if(self.direction == 'W' and self.moved == False):
-                        if (self.valueReplaced == '0' or self.valueReplaced == ' '):
+                        if (self.valueReplaced == W or self.valueReplaced == ' '):
                                 self.direction = 'N'
                                 self.row = self.row - 1
                         else:
@@ -86,17 +145,17 @@ class Grid:
         self.grid = []
 
     def colorChange(self, r, c, val):
-            if (val == '0' or val == ' '):
-                    self.grid[r][c].character = '#'
-            elif (val == '#'):
-                    self.grid[r][c].character = ' '
+            if (val == W or val == ' '):
+                    self.grid[r][c].character = B
+            elif (val == B):
+                    self.grid[r][c].character = W
 
     def getValReplaced(self, row, col):
             val = self.grid[row][col].character
             return val
 
     def relocateAnt(self, rowx, colx):
-            self.grid[rowx][colx].character = '\x1b[0;33;40m' + 'X' + '\x1b[0m'
+            self.grid[rowx][colx].character = X
 
     def initGrid(self, size):
         for idx in range(size):
@@ -114,7 +173,7 @@ class Grid:
             location = (size/2)-1
             ant = Ant(location, location)
 
-        self.grid[ant.row][ant.col].character = '\x1b[0;33;40m' + 'X' + '\x1b[0m'
+        self.grid[ant.row][ant.col].character = X
         return ant
 
     def printLine(self, width):
@@ -139,22 +198,34 @@ class Grid:
 def cls():
     os.system('cls' if os.name=='nt' else 'clear')
 
+
 ####################################
 #         MAIN PROGRAM LOOP        #
 #                                  #
 ####################################
 
-#write a user input method that takes number of rounds and whether first ant
-#is central or random as arguments
-
 size = 64
 grid  = Grid()
 grid.initGrid(size)
+running = True
 
 ant = grid.generateAnt(size, 0)
 num = 1
 
-for rounds in range(11000):
-        ant.moveAnt(size, grid)
-        cls()
-        num = grid.printGrid(size, num)
+while(running == True):
+
+        for rounds in range(11000):
+                ant.moveAnt(size, grid)
+                cls()
+                num = grid.printGrid(size, num)
+
+        #-----------------------------
+        # ASK USER WHETHER TO CONTINUE
+        #-----------------------------
+        print "\nWould you like to run the Ant again?"
+        print "1. \tYes"
+        print "2. \tNo\n"
+        print "Input your selection, then press ENTER:\n"
+        running = validate_ints(keepGoing, 2)
+
+print "Thanks, bye!"
