@@ -8,6 +8,8 @@ Langton's ant can also be described as a cellular automaton, where the grid is c
 
 from random import randint
 
+import os
+
 ####################################
 #          DEFINE CLASSES          #
 #                                  #
@@ -94,7 +96,7 @@ class Grid:
             return val
 
     def relocateAnt(self, rowx, colx):
-            self.grid[rowx][colx].character = 'X'
+            self.grid[rowx][colx].character = '\x1b[0;33;40m' + 'X' + '\x1b[0m'
 
     def initGrid(self, size):
         for idx in range(size):
@@ -112,7 +114,7 @@ class Grid:
             location = (size/2)-1
             ant = Ant(location, location)
 
-        self.grid[ant.row][ant.col].character = 'X'
+        self.grid[ant.row][ant.col].character = '\x1b[0;33;40m' + 'X' + '\x1b[0m'
         return ant
 
     def printLine(self, width):
@@ -122,16 +124,20 @@ class Grid:
         print "+" + topline + "+"
 
     def printGrid(self, size, number):
-        print number
-        grid.printLine(size)
+        #print number
+        #grid.printLine(size)
         line = "|"
         for rows in range(size):
                 for columns in range(size):
                         line += " "+str(self.grid[rows][columns].character)
                 print line + " |"
                 line = "|"  #clear "line"
-        grid.printLine(size)
+        #grid.printLine(size)
         number = number + 1
+        return number
+
+def cls():
+    os.system('cls' if os.name=='nt' else 'clear')
 
 ####################################
 #         MAIN PROGRAM LOOP        #
@@ -141,12 +147,14 @@ class Grid:
 #write a user input method that takes number of rounds and whether first ant
 #is central or random as arguments
 
-size = 60
+size = 64
 grid  = Grid()
 grid.initGrid(size)
 
 ant = grid.generateAnt(size, 0)
+num = 1
 
 for rounds in range(11000):
         ant.moveAnt(size, grid)
-        grid.printGrid(size, 1)
+        cls()
+        num = grid.printGrid(size, num)
